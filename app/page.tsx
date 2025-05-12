@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
-    <div>
-      EZSPLIT
+    <div className="pt-16">
+      EzSplit
       <br />
-      <Button variant="destructive">Button</Button>
+      <Button variant="destructive">Anjesh Singh</Button>
       </div>
   );
 }
