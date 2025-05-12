@@ -1,11 +1,49 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
-  return (
-    <div className="pt-16">
-      EzSplit
-      <br />
-      <Button variant="destructive">Anjesh Singh</Button>
+  return <div className="flex flex-col pt-16">
+    <section className="mt-20 pb-12 space-y-10 md:space-y-20 px-5">
+      <div className = "container mx-auto px-4 md:px-6 text-center space-y-6">
+        <Badge variant="outline" className="bg-green-100 text-green-700">
+          Track. Analyze. Split. Smarter with AI.
+        </Badge>  
+        <h1 className ="gradient-title mx-auto max-w-4xl text-4xl md:text-7xl font-bold">
+        Smarter splits and insights for you and your crew.
+        </h1>
+
+        <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl/relaxed">
+        Track group expenses, split smartly, settle fast — with insights that keep everyone on the same page.
+        </p>
+
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Button size={"lg"} className=" hover:bg-teal-700">
+            <Link href="/dashboard">Get Started</Link>
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+          <Button variant="outline" size={"lg"} className=" border-green-600 text-green-600 hover:bg-green-50">
+            <Link href="#how-it-works">See How it Works</Link>
+          </Button>
+        </div>
+
+      </div>  
+
+      <div className="container mx-auto max-w-5xl overflow-hidden rounded-xl shadow-xl">
+        <div className="gradient p-1 aspect-[16/9]">
+          <Image 
+          src="/logos/hero.png"
+          alt="Banner"
+          width={1280}
+          height={720}
+          className="rounded-lg mx-auto"
+          priority
+          />
+        </div>
       </div>
-  );
+
+    </section>  
+  </div>;
 }
