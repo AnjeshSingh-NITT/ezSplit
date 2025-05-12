@@ -22,6 +22,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(auth)/layout.tsx", "convex/schema.js", "convex/schema.js", "convex/users.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(auth)/layout.tsx", "convex/schema.js", "convex/schema.js", "convex/users.js", "middleware.ts"],
   "exclude": ["node_modules"]
 }
