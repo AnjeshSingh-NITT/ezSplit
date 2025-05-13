@@ -1,19 +1,22 @@
 "use client";
 
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { api } from '@/convex/_generated/api';
-import { useConvexQuery } from '@/hooks/use-convex-query';
-import { AvatarFallback } from '@radix-ui/react-avatar';
-import { Plus, User, Users } from 'lucide-react';
-import Link from 'next/link';
-import React, { useState } from 'react';
-import BarLoader from 'react-spinners/BarLoader';
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { api } from "@/convex/_generated/api";
+import { useConvexQuery } from "@/hooks/use-convex-query";
+import { BarLoader } from "react-spinners";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Plus, Users, User } from "lucide-react";
+import CreateGroupModal from "./_components/create-group-modal";
 
 const ContactsPage = () => {
   const [isCreateGroupModalOpen,setIsCreateGroupModalOpen] = useState(false);
   const { data, isLoading } = useConvexQuery(api.contacts.getAllContacts);
+
+  const router = useRouter()
 
     if (isLoading) {  
       return(
@@ -113,7 +116,12 @@ const ContactsPage = () => {
         </div>
       </div>
 
-      
+      <CreateGroupModal
+        isOpen = {isCreateGroupModalOpen}
+        onClose = {() => setIsCreateGroupModalOpen(false)}
+        onSuccess = {(groupId) => router.push(`/groups/${groupId}`)}
+      />
+
 
       </div>
     );
