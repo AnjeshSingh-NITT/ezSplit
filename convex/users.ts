@@ -31,7 +31,7 @@ export const store = mutation({
       name: identity.name ?? "Anonymous",
       tokenIdentifier: identity.tokenIdentifier,
       email: identity.email ?? "",
-      imageUrl: identity.imageUrl ?? "",
+      imageUrl: typeof identity.imageUrl === "string" ? identity.imageUrl : "",
     });
   },
 });
@@ -45,7 +45,7 @@ export const getCurrentUser = query({
     const user = await ctx.db
       .query("users")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier),
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
       )
       .first();
 
