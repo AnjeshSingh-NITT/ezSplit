@@ -22,6 +22,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(auth)/layout.tsx", "convex/schema.js", "convex/schema.js", "convex/users.js", "middleware.js", "convex/seed.js", "convex/contacts.js", "app/(main)/contacts/page.jsx", "app/(main)/contacts/page.jsx", "app/(main)/contacts/_components/create-group-modal.jsx", "hooks/use-convex-query.js", "hooks/use-store-user.jsx", "app/(auth)/sign-up/[[...sign-up]]/page.jsx", "app/(auth)/sign-in/[[...sign-in]]/page.jsx", "app/(main)/layout.jsx", "components/convex-client-provider.jsx", "app/page.tsx", "app/layout.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(auth)/layout.tsx", "convex/schema.js", "convex/schema.js", "convex/users.js", "middleware.js", "convex/seed.js", "convex/contacts.js", "app/(main)/contacts/page.jsx", "app/(main)/contacts/page.jsx", "app/(main)/contacts/_components/create-group-modal.jsx", "hooks/use-convex-query.js", "hooks/use-store-user.jsx", "app/(auth)/sign-up/[[...sign-up]]/page.jsx", "app/(auth)/sign-in/[[...sign-in]]/page.jsx", "app/(main)/layout.jsx", "components/convex-client-provider.jsx", "app/page.tsx", "app/layout.tsx", "app/(main)/dashboard/page.jsx"],
   "exclude": ["node_modules"]
 }
