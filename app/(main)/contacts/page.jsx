@@ -15,7 +15,7 @@ import CreateGroupModal from "./_components/create-group-modal";
 const ContactsPage = () => {
   const [isCreateGroupModalOpen,setIsCreateGroupModalOpen] = useState(false);
   const { data, isLoading } = useConvexQuery(api.contacts.getAllContacts);
-
+  console.log(api.contacts.getAllContacts)
   const router = useRouter()
 
     if (isLoading) {  

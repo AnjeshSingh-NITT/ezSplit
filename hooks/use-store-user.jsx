@@ -1,16 +1,15 @@
-import { useUser } from "@clerk/clerk-react";
+import { useUser } from "@clerk/nextjs";
 import { useConvexAuth } from "convex/react";
 import { useEffect, useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { Id } from "../convex/_generated/dataModel";
 
 export function useStoreUser() {
   const { isLoading, isAuthenticated } = useConvexAuth();
   const { user } = useUser();
   // When this state is set we know the server
   // has stored the user.
-  const [userId, setUserId] = useState<Id<"users"> | null>(null);
+  const [userId, setUserId] = useState(null);
   const storeUser = useMutation(api.users.store);
   // Call the `storeUser` mutation function to store
   // the current user in the `users` table and return the `Id` value.
