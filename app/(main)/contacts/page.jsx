@@ -15,8 +15,21 @@ import CreateGroupModal from "./_components/create-group-modal";
 const ContactsPage = () => {
   const [isCreateGroupModalOpen,setIsCreateGroupModalOpen] = useState(false);
   const { data, isLoading } = useConvexQuery(api.contacts.getAllContacts);
-  console.log(api.contacts.getAllContacts)
-  const router = useRouter()
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const createGroupParam = searchParams.get("createGroup");
+    if (createGroupParam) {
+      setIsCreateGroupModalOpen(true);
+      const url = new URL(window.location.href);
+      url.searchParams.delete("createGroup");
+
+      // Update the URL without reloading the page
+      router.replace(url.pathname + url.search);
+    }
+  },[searchParams,router])
 
     if (isLoading) {  
       return(
