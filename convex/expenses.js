@@ -4,7 +4,7 @@ import { internal } from "./_generated/api";
 
 export const getExpensesBetweenUsers = query({
     args: { userId : v.id("users")},
-    handler: async (convexToJson, {userId}) => {
+    handler: async (ctx, {userId}) => {
         const me = await ctx.runQuery(internal.users.getCurrentUser);
         if(me._id === userId) throw new Error("You cannot query yourself");
 
