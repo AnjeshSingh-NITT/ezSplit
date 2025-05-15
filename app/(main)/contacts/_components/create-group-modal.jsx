@@ -1,44 +1,69 @@
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogFooter, 
-  DialogHeader, 
-  DialogTitle 
-} from '@/components/ui/dialog';
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Label } from '@/components/ui/label';
-import { z } from 'zod';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { useConvexMutation, useConvexQuery } from '@/hooks/use-convex-query';
-import { api } from '@/convex/_generated/api';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { UserPlus, X } from 'lucide-react';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import { toast } from 'sonner';
+"use client";
+
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { api } from "@/convex/_generated/api";
+import { useConvexMutation, useConvexQuery } from "@/hooks/use-convex-query";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { X, UserPlus } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const groupSchema = z.object({
-  name:z.string().min(1,"Group name is required"),
-  description:z.string().optional(),
-})
+  name: z.string().min(1, "Group name is required"),
+  description: z.string().optional(),
+});
 
-const CreateGroupModal = ({isOpen, onClose, onSuccess}) => {
-  
+export function CreateGroupModal({ isOpen, onClose, onSuccess }) {
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [commandOpen, setCommandOpen] = useState(false);
 
-  const {data:currentUser} = useConvexQuery(api.users.getCurrentUser);
-  const {data:searchResults, isLoading: isSearching} = useConvexQuery(
+  const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
+  const createGroup = useConvexMutation(api.contacts.createGroup);
+  const { data: searchResults, isLoading: isSearching } = useConvexQuery(
     api.users.searchUsers,
     { query: searchQuery }
   );
-  const createGroup = useConvexMutation(api.contacts.createGroup)
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm({
+    resolver: zodResolver(groupSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+    },
+  });
 
   const addMember = (user) => {
     if (!selectedMembers.some((m) => m.id === user.id)) {
@@ -47,45 +72,38 @@ const CreateGroupModal = ({isOpen, onClose, onSuccess}) => {
     setCommandOpen(false);
   };
 
-  const{
-    register,
-    handleSubmit,
-    formState:{errors,isSubmitting},
-    reset
-  } 
-  = useForm({
-    resolver:zodResolver(groupSchema),
-    defaultValues:{
-      name:"",
-      description:"",
-    },
-  });
-
-  const onSubmit = async (data) => {
-    try{
-      const memberIds = selectedMembers.map((member) => member.id);
-
-      const groupId=await createGroup.mutate({
-        name:data.name,
-        description:data.description,
-        members:memberIds,
-      });
-
-      toast.success("Group created successfully");
-      handleClose();
-
-      if(onSuccess) onSuccess(groupId);
-    } catch(error){
-        toast.error("Failed to create group: "+ error.message);
-    };
-  }
-  
   const removeMember = (userId) => {
     setSelectedMembers(selectedMembers.filter((m) => m.id !== userId));
   };
 
-  const handleClose =() =>{
-    //reset the frm
+  const onSubmit = async (data) => {
+    try {
+      // Extract member IDs
+      const memberIds = selectedMembers.map((member) => member.id);
+
+      // Create the group
+      const groupId = await createGroup.mutate({
+        name: data.name,
+        description: data.description,
+        members: memberIds,
+      });
+
+      // Success
+      toast.success("Group created successfully!");
+      reset();
+      setSelectedMembers([]);
+      onClose();
+
+      // Redirect to the new group page
+      if (onSuccess) {
+        onSuccess(groupId);
+      }
+    } catch (error) {
+      toast.error("Failed to create group: " + error.message);
+    }
+  };
+
+  const handleClose = () => {
     reset();
     setSelectedMembers([]);
     onClose();
@@ -93,7 +111,7 @@ const CreateGroupModal = ({isOpen, onClose, onSuccess}) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Create New Group</DialogTitle>
         </DialogHeader>
@@ -101,20 +119,21 @@ const CreateGroupModal = ({isOpen, onClose, onSuccess}) => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Group Name</Label>
-            <Input 
-            id="name" 
-            placeholder="Enter Group Name" 
-            {...register("name")}
+            <Input
+              id="name"
+              placeholder="Enter group name"
+              {...register("name")}
             />
             {errors.name && (
-            <p className="text-sm text-red-500"> {errors.name.message}</p>
+              <p className="text-sm text-red-500">{errors.name.message}</p>
             )}
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="description">Description (Optional)</Label>
             <Textarea
               id="description"
-              placeholder="Enter Group Description"
+              placeholder="Enter group description"
               {...register("description")}
             />
           </div>
@@ -122,6 +141,7 @@ const CreateGroupModal = ({isOpen, onClose, onSuccess}) => {
           <div className="space-y-2">
             <Label>Members</Label>
             <div className="flex flex-wrap gap-2 mb-2">
+              {/* Current user (always included) */}
               {currentUser && (
                 <Badge variant="secondary" className="px-3 py-1">
                   <Avatar className="h-5 w-5 mr-2">
@@ -133,15 +153,15 @@ const CreateGroupModal = ({isOpen, onClose, onSuccess}) => {
                   <span>{currentUser.name} (You)</span>
                 </Badge>
               )}
-              {/*selected members*/}
 
-
+              {/* Selected members */}
               {selectedMembers.map((member) => (
                 <Badge
-                  key={member.id}
+                  key={`${member.id}-${member.email}`} // more uniqueness
                   variant="secondary"
                   className="px-3 py-1"
                 >
+              
                   <Avatar className="h-5 w-5 mr-2">
                     <AvatarImage src={member.imageUrl} />
                     <AvatarFallback>
@@ -159,47 +179,49 @@ const CreateGroupModal = ({isOpen, onClose, onSuccess}) => {
                 </Badge>
               ))}
 
-              {/* add user to selected members */}
+              {/* Add member button with dropdown */}
               <Popover open={commandOpen} onOpenChange={setCommandOpen}>
                 <PopoverTrigger asChild>
                   <Button
-                  type="button"
-                  variant = "outline"
-                  size="sm"
-                  className="h-8 gap-1 text-xs"
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-8 gap-1 text-xs"
                   >
-                    <UserPlus className="h-3.5 w-3.5"/>
-                    Add Members
+                    <UserPlus className="h-3.5 w-3.5" />
+                    Add member
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="p-0" align="start" side="bottom">
                   <Command>
-                    <CommandInput 
-                      placeholder="Search by name or email..." 
-                      value = {searchQuery}
+                    <CommandInput
+                      placeholder="Search by name or email..."
+                      value={searchQuery}
                       onValueChange={setSearchQuery}
                     />
                     <CommandList>
-                      <CommandEmpty>{searchQuery.length<2? (
-                        <p className="py-3 px-4 text-sm text-center text-muted-foreground">
-                        Type atleast 2 characters to search
-                      </p>
-                      ) : isSearching? (
-                        <p className="py-3 px-4 text-sm text-center text-muted-foreground">
+                      <CommandEmpty>
+                        {searchQuery.length < 2 ? (
+                          <p className="py-3 px-4 text-sm text-center text-muted-foreground">
+                            Type at least 2 characters to search
+                          </p>
+                        ) : isSearching ? (
+                          <p className="py-3 px-4 text-sm text-center text-muted-foreground">
                             Searching...
-                        </p>
-                      ) : <p className="py-3 px-4 text-sm text-center text-muted-foreground">
-                            No results found
-                        </p>
-                      
-                      }</CommandEmpty>
+                          </p>
+                        ) : (
+                          <p className="py-3 px-4 text-sm text-center text-muted-foreground">
+                            No users found
+                          </p>
+                        )}
+                      </CommandEmpty>
                       <CommandGroup heading="Users">
                         {searchResults?.map((user) => (
-                          <CommandItem 
+                          <CommandItem
                             key={user.id}
                             value={user.name + user.email}
-                            onSelect={()=>addMember(user)}
-                            >
+                            onSelect={() => addMember(user)}
+                          >
                             <div className="flex items-center gap-2">
                               <Avatar className="h-6 w-6">
                                 <AvatarImage src={user.imageUrl} />
@@ -216,47 +238,32 @@ const CreateGroupModal = ({isOpen, onClose, onSuccess}) => {
                             </div>
                           </CommandItem>
                         ))}
-                        
                       </CommandGroup>
-                      
                     </CommandList>
                   </Command>
-
                 </PopoverContent>
               </Popover>
-
-
             </div>
-
-            {/* I HAVE COMMENTED THIS FEATURE TO ALLOW THE USER TO TRACK PERSONAL EXPENSES AS WELL */}
-
-            {/* {selectedMembers.length === 0 && (
+            {selectedMembers.length === 0 && (
               <p className="text-sm text-amber-600">
-                No members selected. Click "Add Members" to select users.
+                Add at least one other person to the group
               </p>
-            )} */}
-
+            )}
           </div>
 
           <DialogFooter>
-          <Button type="button" variant="outline" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button 
-            type="submit" 
-            disabled={isSubmitting} 
-          >
-            {isSubmitting ? "Creating..." : "Create Group"}
-          </Button>
-        </DialogFooter>
-
+            <Button type="button" variant="outline" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={isSubmitting || selectedMembers.length === 0}
+            >
+              {isSubmitting ? "Creating..." : "Create Group"}
+            </Button>
+          </DialogFooter>
         </form>
-
-        
-    </DialogContent>
+      </DialogContent>
     </Dialog>
-
   );
-};
-
-export default CreateGroupModal;
+}
