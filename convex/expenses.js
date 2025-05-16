@@ -156,3 +156,56 @@ export const deleteExpense = mutation({
     },
   });
   
+// Add a new expense
+export const createExpense = mutation({
+  args: {
+    description: v.string(),
+    amount: v.number(),
+    date: v.date(),
+    category: v.optional(v.string()),
+    paidByUserId: v.id("users"),
+    splitType: v.string(), //equal, % based or custom
+    splits: v.array(
+      v.object({
+        userId: v.id("users"),
+        amount: v.number(),
+        paid: v.boolean(),
+      })
+    ),
+    groupId: v.optional(v.id("groups")),
+  },
+  handler: async(ctx, args)=>{
+    //use centralised getCurrentUser function
+    const user = await ctx.runQuery(internal.users.getCurrentUser);
+    if(args.groupId){
+      const group = await ctx.runQuery(internal.users.getCurrentUser);
+      if(!group) throw new Error("Group not found");
+
+      const isMember = group.members.some((m) => m.userId === user._id);
+      if(!isMember) throw new Error("You are not a member of this group");
+    }
+    const totalSplitAmount = args.splits.reduce(
+      (sum, split) => sum + split.amount, 0);
+
+    const tolerance = 0.01 //allow for small errors
+
+    if(Math.abs(totalSplitAmount - args.amount) > tolerance){
+      throw new Error("Total split amount does not match the expense amount");
+    }
+
+    const expenseId = await ctx.db.insert("expenses",{
+      description: args.description,
+      amount: args.amount,
+      date: args.date,
+      category: args.category || "Other",
+      paidByUserId: args.paidByUserId,
+      splitType: args.splitType,
+      splits: args.splits,
+      groupId: args.groupId,
+      createdBy: user._id,
+    });
+
+    return expenseId;
+    
+  },
+});
