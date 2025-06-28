@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💸 ezSplit – AI Powered Expense Tracker & Splitter
 
-## Getting Started
+[![Live Demo](https://img.shields.io/badge/Live-Demo-blueviolet?style=for-the-badge)](https://ez-split-f7pf.vercel.app/)
+[![Next.js](https://img.shields.io/badge/Built%20with-Next.js-000?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/UI-TailwindCSS-38bdf8?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-First, run the development server:
+---
+
+**ezSplit** is a sleek, full-stack **AI-powered expense tracking and splitting app** built with the React + Next.js ecosystem. Perfect for teams, roommates, friends, or solo use — ezSplit uses artificial intelligence to understand and split bills efficiently.
+
+---
+
+## ✨ Features
+
+- ✅ **AI-powered expense understanding** from raw inputs  
+- 🤝 **Smart bill splitting** between friends, teams, or roommates  
+- 🔁 **Automated payment reminders** via [Inngest](https://innge.st/yt-rsc3)  
+- 📊 **Spending insights** delivered intelligently  
+- 📱 **Fully responsive design** — works great on mobile, tablet, and desktop  
+- 🔐 Seamless user onboarding with [Clerk](https://go.clerk.com/io4ILbV)  
+- ⚡ Real-time backend + DB with [Convex](https://convex.link/roadsideai)  
+- 🎨 Clean and modern UI with Tailwind CSS + Shadcn UI
+
+---
+
+## 🛠️ Tech Stack
+
+| Purpose               | Tech                                                                 |
+|-----------------------|----------------------------------------------------------------------|
+| **Frontend**          | React 19, Next.js 15                                                 |
+| **Styling**           | Tailwind CSS, Shadcn UI                                              |
+| **Authentication**    | [Clerk](https://go.clerk.com/io4ILbV)                                |
+| **Backend & Database**| [Convex](https://convex.link/roadsideai)                    |
+| **Background Jobs**   | [Inngest](https://innge.st/yt-rsc3) – used for ⏰ payment reminders & 📈 spending insights |
+| **Hosting**           | Vercel                                                               |
+
+---
+
+## 🚀 Getting Started
+
+Clone the repo and run the development server:
 
 ```bash
+git clone https://github.com/AnjeshSingh-NITT/ezSplit.git
+cd ezSplit
+
+# Install dependencies
+npm install --legacy-peer-deps
+
+# create .env.local file and copy the example
+
+# Start convex backend
+npx convex dev
+
+# Run the app
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```   
+
+---
+
+## 📁 .env.local.example
+
+```env
+NEXT_PUBLIC_CONVEX_URL=http://localhost:3010
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📸 Screenshots
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Landing page
+![Landing page](./screenshots/landing-page.png)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Login Page
+![Login Page](./screenshots/login-page.png)
 
-## Learn More
+### Features
+![Features](./screenshots/features.png)
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Dashboard
+![Dashboard](./screenshots/dashboard1.png)
+![Dashboard](./screenshots/dashboard2.png)
